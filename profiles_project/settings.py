@@ -122,5 +122,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Sets the default model for user models (app name.model)
+# Sets the default model for user models (app_name.model)
 AUTH_USER_MODEL = 'profiles_api.UserProfile'

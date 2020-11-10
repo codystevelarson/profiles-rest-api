@@ -12,7 +12,7 @@ class UserProfileManager(BaseUserManager):
 
         # makes backend of email case insensitive
         email = self.normalize_email(email)
-        user = self.model(email=emai, name=name)
+        user = self.model(email=email, name=name)
 
         # Using the abstractBaseUser model's method to create a password hash
         user.set_password(password)
