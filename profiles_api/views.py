@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets, filters
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from . import serializers, permissions
 from .models import UserProfile
@@ -102,3 +104,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnProfile, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', 'email')
+
+
+class UserLoginApiView(ObtainAuthToken):
+    ''' Handle creating user auth tokens '''
+    # Adds renderer classes to this class to show in api view
+    # ObtainAuthToken is not a view set so it does not come with a renderer_class
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

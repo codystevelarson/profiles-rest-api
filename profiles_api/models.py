@@ -40,6 +40,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     objects = UserProfileManager()
 
+    # Set user name field in ui to use the user's email
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
