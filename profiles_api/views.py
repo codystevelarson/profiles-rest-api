@@ -4,9 +4,10 @@ from rest_framework import status, viewsets, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from . import serializers, permissions
-from .models import UserProfile
+from .models import UserProfile, ProfileFeedItem
 
 
 class HelloApiView(APIView):
@@ -111,3 +112,24 @@ class UserLoginApiView(ObtainAuthToken):
     # Adds renderer classes to this class to show in api view
     # ObtainAuthToken is not a view set so it does not come with a renderer_class
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    ''' Handles creating reading and updating profile feed items '''
+    authentication_classes = (TokenAuthentication, )
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = ProfileFeedItem.objects.all()
+    permission_classes = (
+        permissions.UpdateOwnStatus,
+        # User must be authenticated to perform create, put, patch, delete methods
+        # IsAuthenticatedOrReadOnly
+        # User must be authenticated to use entire endpoint
+        IsAuthenticated
+    )
+
+    # Django REST Framework function to override behavior for creating objects through a view set
+
+    def perform_create(self, serializer):
+        ''' Sets user profile to logged in user '''
+        # since user profile is read only it must be assigned here when feed item is created
+        serializer.save(user_profile=self.request.user)
